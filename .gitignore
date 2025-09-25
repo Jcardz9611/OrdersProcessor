@@ -1,0 +1,23 @@
+@'
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pytest_cache/
+.venv/
+env/
+venv/
+
+# Secrets / env
+.env
+credentials.json
+**/credentials.json
+**/*credentials*.json
+
+# OS / editors
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+'@ | Set-Content -Encoding ascii .gitignore
