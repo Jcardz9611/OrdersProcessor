@@ -6,9 +6,15 @@ from datetime import datetime
 from decimal import Decimal, InvalidOperation
 from typing import Dict, List, Optional
 
+# Required dependencies
+
+#Required dependency for reading Google Sheets.
 import gspread
 from gspread.utils import rowcol_to_a1
+
+#Required dependency to connect script to Google sheets using Google Cloud Service Account.
 from google.oauth2.service_account import Credentials
+
 
 # Env vars
 SHEET_ID = os.environ.get("SHEET_ID", "<PUT_YOUR_SHEET_ID_HERE>")
@@ -22,9 +28,9 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive.readonly",
 ]
 
-
+#Header keys' normalization.
 def norm_key(s: str) -> str:
-    """Basic snake-ish normalization for header keys."""
+    """Snak-ish normalization for header keys."""
     return (
         str(s)
         .strip()
@@ -35,11 +41,13 @@ def norm_key(s: str) -> str:
     )
 
 
+
 def _lookup_key_searchform(k: str) -> str:
     """Remove non [a-z0-9_] for tolerant matching."""
     return re.sub(r"[^a-z0-9_]+", "", k)
 
 
+#Credentials.json required to execute tasks in Google Sheets file.
 def open_sheet():
     """Authorize and open worksheet."""
     if not SHEET_ID or SHEET_ID.startswith("<PUT_"):
@@ -48,6 +56,7 @@ def open_sheet():
     gc = gspread.authorize(creds)
     ws = gc.open_by_key(SHEET_ID).worksheet(WORKSHEET_NAME)
     return ws
+
 
 
 def ensure_processed_at_column(ws) -> int:
@@ -96,6 +105,7 @@ def get_field(rec: Dict, *logical_names: str) -> str:
     return ""
 
 
+#This function handles the 'Total' column, it expects user might use different formats and characters when referring to money.
 def parse_amount(s: str) -> Optional[Decimal]:
     """Parse money-like text into Decimal. Return None if invalid."""
     if s is None:
@@ -117,6 +127,7 @@ def parse_amount(s: str) -> Optional[Decimal]:
         return None
 
 
+#Using REXEG to verify email format. Handles possible typos that are frequent by users. (Ex: forgetting '@' char)
 def is_valid_email(s: str) -> bool:
     """Very basic email format check."""
     if not s:
