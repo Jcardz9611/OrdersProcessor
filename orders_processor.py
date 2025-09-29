@@ -8,7 +8,7 @@ from typing import Dict, List, Optional
 
 # Required dependencies
 
-#Required dependency for reading Google Sheets.
+# Required dependency for reading Google Sheets.
 import gspread
 from gspread.utils import rowcol_to_a1
 
